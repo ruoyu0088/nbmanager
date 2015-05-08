@@ -26,6 +26,6 @@ def iter_notebooks(chapters=None):
             for fn in os.listdir(folder):
                 if fn.startswith("_"):
                     continue
-                if re.match(r"\w+-\d\d\d-.+?\.ipynb", fn):
+                if re.match(r"\w+-[0-9a-zA-Z]\d\d-.+?\.ipynb", fn):
                     fn = path.join(folder, fn)
                     yield path.abspath(fn)

@@ -34,10 +34,7 @@
 {% endblock execute_result %}
 
 {% block stream %}
-```
-##OUTPUT
-{{ output.text }}
-```
+{{ resources["worker"].process_stream(output) }}
 {% endblock stream %}
 
 {% block data_svg %}

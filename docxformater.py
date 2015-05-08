@@ -171,11 +171,11 @@ def process_all_graphs():
 def process_all_references():
     import bisect
 
-    shapes = list(doc.InlineShapes)
-    shape_starts = [shape.Range.Start for shape in shapes]
-    gids = [get_graph_title(shape)[0] for shape in shapes]
-
     def _process(target, offset):
+        shapes = list(doc.InlineShapes)
+        shape_starts = [shape.Range.Start for shape in shapes]
+        gids = [get_graph_title(shape)[0] for shape in shapes]
+
         goto_start()
         reference_gids = []
         while True:
@@ -206,6 +206,7 @@ def process_all_references():
 
     _process("ref:fig-next", 0)
     for i in range(9, 1, -1):
+        _process("ref:fig-next{}".format(i), i-1)
         _process("ref:fig-prev{}".format(i), -i)
     _process("ref:fig-prev", -1)
 

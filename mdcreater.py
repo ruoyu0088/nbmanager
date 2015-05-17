@@ -113,7 +113,7 @@ class GraphMerge(object):
             h, w = img.shape[:2]
             merge_img[y:y+h, x:x+w] = img
 
-        cv2.imwrite(path.join(BUILD_ROOT_FOLDER, self.graphs[-1].replace(".png", ".merge.png")), merge_img)
+        cv2.imwrite(path.join(BUILD_FULL_PATH, self.graphs[-1].replace(".png", ".merge.png")), merge_img)
 
 
 class Worker(object):

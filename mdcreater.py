@@ -174,21 +174,24 @@ class Worker(object):
 
         first_line = lines[0]
         for line in lines:
-            if line.startswith((u"#%fig", u"#%nofig", u"%%disabled", "%C ", "%%include", "%%language")):
+            if line.startswith((u"#%fig", u"#%nofig", u"%%disabled", "%C ", "%%include", "%%language","%%nopage")):
                 continue
-            if line.startswith(u"#%hide_output"):
+            elif line.startswith(u"#%hide_output"):
                 self.hide_output = True
                 continue
-            if line.startswith(u"%omit"):
+            elif line.startswith(u"%omit"):
                 line = line.replace(u"%omit ", u"")
-            if line.startswith("%col "):
+            elif line.startswith("%col "):
                 line = re.match(ur"%col\s+\d+\s+(.+)", line).group(1)
-            if line.startswith("#%hide"):
+            elif line.startswith("#%hidecell"):
+                result = []
+                break
+            elif line.startswith("#%hide"):
                 hide_flag = True
-            if line.startswith("#%show"):
+            elif line.startswith("#%show"):
                 hide_flag = False
                 continue
-            if not hide_flag:
+            elif not hide_flag:
                 result.append(line)
 
         code = u"\n".join(result)
@@ -215,6 +218,9 @@ class Worker(object):
         return u"```\n##OUTPUT\n{}\n```".format(output.text)
 
     def process_output(self, output):
+        if getattr(output, "name", None) == "stderr":
+            return ""
+
         if self.hide_output:
             return ""
 

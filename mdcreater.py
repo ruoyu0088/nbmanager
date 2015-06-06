@@ -34,7 +34,6 @@ def to_md_table(df_in):
         df = df.reset_index()
         n = list(df.apply(lambda s:s.str.len().max() + 4))
 
-
         split_line = "+" + "+".join(["-" * x for x in n]) + "+"
         yield split_line
 
@@ -200,7 +199,6 @@ class Worker(object):
             code = code.replace(u"#" + num, num)
             code = code.replace(u"# " + num, num)
 
-
         code = code.rstrip()
 
         if not first_line.startswith("%%language"):
@@ -212,10 +210,11 @@ class Worker(object):
             return u""
 
     def process_stream(self, output):
+        from IPython.utils.text import strip_ansi
         if self.hide_output:
             return ""
 
-        return u"```\n##OUTPUT\n{}\n```".format(output.text)
+        return u"```\n##OUTPUT\n{}\n```".format(strip_ansi(output.text))
 
     def process_output(self, output):
         if getattr(output, "name", None) == "stderr":
@@ -238,6 +237,7 @@ class Worker(object):
             return ""
 
     def process_input(self, cell):
+        self.ignore_next_figure = False
         outputs = [item for item in cell.outputs if "data" in item and "image/" in "|".join(item.data.keys())]
         idx = 0
         lines = cell.source.split(u"\n")
@@ -293,6 +293,8 @@ def read_notebook(notebook_name):
 
     del book.cells[:i]
 
+    code_count = sum(1 for i, cell in enumerate(book.cells) if cell.cell_type == "code")
+
     notebook_name_path = u"/".join(notebook_name.split(u"\\")[-2:])
 
     cell = {u'source': u'''> **SOURCE**
@@ -300,7 +302,7 @@ def read_notebook(notebook_name):
 > 与本节内容对应的Notebook为：`{}`'''.format(notebook_name_path),
             u'cell_type': u'markdown', u'metadata': {}}
 
-    if len(book.cells) >= 10:
+    if code_count >= 5:
         book.cells.insert(1, cell)
 
     return book

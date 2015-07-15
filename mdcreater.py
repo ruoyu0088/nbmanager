@@ -28,14 +28,14 @@ def convert_svg_to_png(svg_fn):
 def to_md_table(df_in):
 
     def _f():
-        df = df_in.astype(str)
-        df.index = df.index.astype(str)
+        df = df_in.astype(unicode)
+        df.index = df.index.astype(unicode)
         name = df.index.name
         df = df.reset_index()
         n = list(df.apply(lambda s:s.str.len().max() + 4))
 
-        split_line = "+" + "+".join(["-" * x for x in n]) + "+"
-        yield split_line
+        split_line = "|" + "|".join(["-" * x for x in n]) + "|"
+        #yield split_line
 
         columns = list(df.columns)
         #columns[0] = ""
@@ -46,11 +46,12 @@ def to_md_table(df_in):
         #    columns[0] = name
         #    yield "|" + "|".join(c.center(x) for x, c in zip(n, columns)) + "|"
 
-        yield split_line.replace("-", "=")
+        #yield split_line.replace("-", "=")
+        yield split_line
 
         for idx, row in df.iterrows():
             yield "|" + "|".join(c.center(x) for x, c in zip(n, row)) + "|"
-            yield "+" + "+".join(["-" * x for x in n]) + "+"
+            #yield "+" + "+".join(["-" * x for x in n]) + "+"
 
     return "\n".join(_f())
 

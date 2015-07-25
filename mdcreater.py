@@ -191,7 +191,8 @@ class Worker(object):
             elif line.startswith("#%show"):
                 hide_flag = False
                 continue
-            elif not hide_flag:
+
+            if not hide_flag:
                 result.append(line)
 
         code = u"\n".join(result)
